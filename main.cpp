@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 #include "Stack.h"
 #include "Node.h"
 #include "Object.h"
@@ -13,9 +14,17 @@ using namespace std;
 //Funcion que elimina espacios
 string eliminarEspacios(string);
 
+//Funcion que escribe las matrices
+void escribirMatrices(vector<Matrix*>);
+
+//Funcion que lee las matrices
+void leerMatrices(vector<Matrix*>&);
+
 int main(int argc, char** argv) {
 	
 	vector<Matrix*> matrices;
+	
+	leerMatrices(matrices);
 	
 	while(true) {
 		cout << ">>";
@@ -41,7 +50,11 @@ int main(int argc, char** argv) {
 			
 		} else {
 			
+			int size = -1;
+			
 			Stack stack;
+			
+			bool error = false;
 			
 			for(int i = line.size()-1; i >= 0 ; i--) {
 				if(line[i] == '+' || line[i] == '-' || line[i] == '*') {
@@ -49,11 +62,28 @@ int main(int argc, char** argv) {
 				} else {
 					for(int j = 0; j < matrices.size(); j++) {
 						if (matrices[j]->identificador == line[i]) {
+							if(size == -1) {
+								size = matrices[j]->size;
+							}
+							if(size != matrices[j]->size) {
+								cout << endl << "No se puede realizar la operacion: Matrices de diferente dimension" << endl;
+								error = true;
+								break;
+							}
 							stack.push(new Node(matrices[j]));
 							break;
 						}
+						
 					} 
 				}
+				
+				if(error) {
+					break;
+				}
+			}
+			
+			if(error) {
+				continue;
 			}
 			
 			Matrix res;
@@ -79,7 +109,7 @@ int main(int argc, char** argv) {
 						break;
 					}
 					case '*': {
-						res = *m1 * (*m1);
+						res = *m1 * (*m2);
 						stack.push(new Node(&(res)));
 						break;
 					}
@@ -93,6 +123,7 @@ int main(int argc, char** argv) {
 		
 	}
 	
+	escribirMatrices(matrices);
 	
 	return 0;
 }
@@ -108,3 +139,49 @@ string eliminarEspacios(string str) {
 	
 	return str;
 }
+
+
+//Funcion que escribe las matrices
+void escribirMatrices(vector<Matrix*> matrices) {
+	
+	ofstream os("Matrices.txt");
+	
+	if(os.is_open()) {
+		
+		for(auto pm : matrices) {
+			os << pm->format() << endl;
+		}
+		
+		os.close();
+		
+	} else {
+		cout << endl << "No se pudo abrir archivo de salida Matrices.txt" << endl;
+	}
+	
+}
+
+//Funcion que lee las matrices
+void leerMatrices(vector<Matrix*>& matrices) {
+	
+	ifstream ifs("Matrices.txt");
+	
+	if(ifs.is_open()) {
+		
+		string line;
+		
+		while(!getline(ifs,line).eof()) {
+			
+			line = eliminarEspacios(line);
+			
+			matrices.push_back(new Matrix(line));
+			
+		}
+		
+		ifs.close();
+	} else {
+		
+		cout << endl << "No se pudo abrir archivo de entrada Matrices.txt" << endl; 
+	}
+	
+}
+

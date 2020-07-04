@@ -53,8 +53,18 @@ char Matrix::getTipo() {
 }
 
 string Matrix::format() {
-	string res = "";
+	string res =  " =[";
+	res[0] = this->identificador;
 	
+	for(int i = 0; i < this->size; i++) {
+		for(int j = 0; j < this->size; j++) {
+			res += to_string(this->matrix[i][j]) + ",";
+		}
+	}
+	
+	res.back() = ']';
+	
+	return res;
 	
 }
 
@@ -109,6 +119,7 @@ Matrix Matrix::operator*(const Matrix& rhs) {
 			result->matrix[i][j] = 0;
 			for(int k = 0; k < this->size; k++) {
 				result->matrix[i][j] += this->matrix[i][k] * rhs.matrix[k][j];
+				//cout << "i: " << i << " j: " << j << " k: " << k << " m1: " << this->matrix[i][j] << " m2: " << rhs.matrix[i][j] << endl;
 			}
 		}
 	}

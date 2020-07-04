@@ -9,11 +9,14 @@ Matrix::Matrix()
 {
 	this->size = 0;
 	this->matrix = nullptr;
+	this->identificador = ' ';
 }
 
 Matrix::Matrix(int size) {
 	
 	this->size = size;
+	
+	this->identificador = ' ';
 	
 	this->matrix = new int*[size];
 	

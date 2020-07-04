@@ -125,6 +125,11 @@ int main(int argc, char** argv) {
 	
 	escribirMatrices(matrices);
 	
+	//Liberar memoria
+	for(Matrix* m : matrices) {
+		delete m;
+	}
+	
 	return 0;
 }
 
@@ -180,7 +185,7 @@ void leerMatrices(vector<Matrix*>& matrices) {
 		ifs.close();
 	} else {
 		
-		cout << endl << "No se pudo abrir archivo de entrada Matrices.txt" << endl; 
+		//cout << endl << "No se pudo abrir archivo de entrada Matrices.txt" << endl; 
 	}
 	
 }
